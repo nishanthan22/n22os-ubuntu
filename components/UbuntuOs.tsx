@@ -1,9 +1,14 @@
+"use client";
 import React, { useState, useEffect } from "react";
-import ReactGA from "react-ga4";
+import BootingScreen from "./pc/Boot";
+import Desktop from "./pc/DesktopBase";
+import LockScreen from "./pc/LockScreen";
+import Navbar from "./pc/NavBar";
+// import ReactGA from "react-ga4";
 
 const Ubuntu: React.FC = () => {
   const [screenLocked, setScreenLocked] = useState<boolean>(false);
-  const [bgImageName, setBgImageName] = useState<string>("wall-2");
+  const [bgImageName, setBgImageName] = useState<string>("wp2");
   const [bootingScreen, setBootingScreen] = useState<boolean>(true);
   const [shutDownScreen, setShutDownScreen] = useState<boolean>(false);
 
@@ -38,15 +43,15 @@ const Ubuntu: React.FC = () => {
   };
 
   const lockScreen = () => {
-    ReactGA.send({ hitType: "pageview", page: "/lock-screen", title: "Lock Screen" });
-    ReactGA.event({ category: "Screen Change", action: "Set Screen to Locked" });
+    // ReactGA.send({ hitType: "pageview", page: "/lock-screen", title: "Lock Screen" });
+    // ReactGA.event({ category: "Screen Change", action: "Set Screen to Locked" });
     document.getElementById("status-bar")?.blur();
     setTimeout(() => setScreenLocked(true), 100);
     localStorage.setItem("screen-locked", "true");
   };
 
   const unLockScreen = () => {
-    ReactGA.send({ hitType: "pageview", page: "/desktop", title: "Custom Title" });
+    // ReactGA.send({ hitType: "pageview", page: "/desktop", title: "Custom Title" });
     window.removeEventListener("click", unLockScreen);
     window.removeEventListener("keypress", unLockScreen);
     setScreenLocked(false);
@@ -59,15 +64,15 @@ const Ubuntu: React.FC = () => {
   };
 
   const shutDownHandler = () => {
-    ReactGA.send({ hitType: "pageview", page: "/switch-off", title: "Custom Title" });
-    ReactGA.event({ category: "Screen Change", action: "Switched off the Ubuntu" });
+    // ReactGA.send({ hitType: "pageview", page: "/switch-off", title: "Custom Title" });
+    // ReactGA.event({ category: "Screen Change", action: "Switched off the Ubuntu" });
     document.getElementById("status-bar")?.blur();
     setShutDownScreen(true);
     localStorage.setItem("shut-down", "true");
   };
 
   const turnOn = () => {
-    ReactGA.send({ hitType: "pageview", page: "/desktop", title: "Custom Title" });
+    // ReactGA.send({ hitType: "pageview", page: "/desktop", title: "Custom Title" });
     setShutDownScreen(false);
     setBootingScreen(true);
     setTimeOutBootScreen();
@@ -76,8 +81,11 @@ const Ubuntu: React.FC = () => {
 
   return (
     <div className="w-screen h-screen overflow-hidden" id="monitor-screen">
-    {/* Main */}
-    </div>
+    <LockScreen isLocked={screenLocked} bgImgName={bgImageName} unLockScreen={unLockScreen} />
+    <BootingScreen visible={bootingScreen} isShutDown={shutDownScreen} turnOn={turnOn} />
+    <Navbar lockScreen={lockScreen} shutDown={shutDownHandler} />
+    <Desktop bg_image_name={bgImageName} changeBackgroundImage={changeBackgroundImage} />
+  </div>  
   );
 };
 

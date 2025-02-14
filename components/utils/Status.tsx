@@ -1,0 +1,41 @@
+import React from "react";
+import SmallArrow from "./Arrow";
+
+const Status: React.FC = () => {
+  return (
+    <div className="flex justify-center items-center">
+      <span className="mx-1.5">
+        <img
+          width="16px"
+          height="16px"
+          src="./themes/Yaru/status/network-wireless-signal-good-symbolic.svg"
+          alt="ubuntu wifi"
+          className="inline status-symbol w-4 h-4"
+        />
+      </span>
+      <span className="mx-1.5">
+        <img
+          width="16px"
+          height="16px"
+          src="./themes/Yaru/status/audio-volume-medium-symbolic.svg"
+          alt="ubuntu sound"
+          className="inline status-symbol w-4 h-4"
+        />
+      </span>
+      <span className="mx-1.5">
+        <img
+          width="16px"
+          height="16px"
+          src="./themes/Yaru/status/battery-good-symbolic.svg"
+          alt="ubuntu battery"
+          className="inline status-symbol w-4 h-4"
+        />
+      </span>
+      <span className="mx-1">
+        <SmallArrow angle="down" />
+      </span>
+    </div>
+  );
+};
+
+export default Status;
