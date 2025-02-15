@@ -1,5 +1,5 @@
 "use client";
-import Ubuntu from "@/components/UbuntuOs"; // Ensure the correct path
+import Ubuntu from "@/components/UbuntuOs";
 import Meta from "@/components/Meta";
 
 export default function Home() {
@@ -12,7 +12,7 @@ export default function Home() {
         url="https://nishanthanmr.com/home"
         image=""
       />
-      <Ubuntu /> {/* This will render your full OS UI */}
+      <Ubuntu />
     </>
   );
 }

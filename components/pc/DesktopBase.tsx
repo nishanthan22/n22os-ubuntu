@@ -19,6 +19,7 @@ const Desktop: React.FC<DesktopProps> = ({ bg_image_name, changeBackgroundImage 
   const [closedWindows, setClosedWindows] = useState<Record<string, boolean>>({});
   const [minimizedWindows, setMinimizedWindows] = useState<Record<string, boolean>>({});
   const [desktopApps, setDesktopApps] = useState<string[]>([]);
+  const [favouriteApps, setFavouriteApps] = useState<Record<string, boolean>>({});
   const [contextMenus, setContextMenus] = useState({ desktop: false, default: false });
   const [showNameBar, setShowNameBar] = useState(false);
   const [allAppsView, setAllAppsView] = useState(false);
@@ -58,11 +59,13 @@ const Desktop: React.FC<DesktopProps> = ({ bg_image_name, changeBackgroundImage 
     const closed: Record<string, boolean> = {};
     const minimized: Record<string, boolean> = {};
     const desktop: string[] = [];
+    const favourites: Record<string, boolean> = {};
 
     apps.forEach((app) => {
       focused[app.id] = false;
       closed[app.id] = true;
       minimized[app.id] = false;
+      favourites[app.id] = app.favourite;
       if (app.desktop_shortcut) {
         desktop.push(app.id);
       }
@@ -72,6 +75,21 @@ const Desktop: React.FC<DesktopProps> = ({ bg_image_name, changeBackgroundImage 
     setClosedWindows(closed);
     setMinimizedWindows(minimized);
     setDesktopApps(desktop);
+    setFavouriteApps(favourites);
+  };
+  const renderDesktopApps = () => {
+    return (
+      <div className="absolute right-10 top-16 flex flex-col space-y-6">
+        {apps.map((app, index) =>
+          desktopApps.includes(app.id) ? (
+            <div key={index} onClick={() => openApp(app.id)} className="flex flex-col items-center cursor-pointer">
+              <img src={app.icon} alt={app.title} className="w-14 h-14" />
+              <p className="text-sm text-white mt-2 text-center font-medium">{app.title}</p>
+            </div>
+          ) : null
+        )}
+      </div>
+    );
   };
 
   const renderWindows = () => {
@@ -135,7 +153,7 @@ const Desktop: React.FC<DesktopProps> = ({ bg_image_name, changeBackgroundImage 
       {/* Ubuntu Side Menu Bar */}
       <SideBar
         apps={apps}
-        favourite_apps={{}} // TODO: Implement favourite apps properly
+        favourite_apps={favouriteApps}
         closed_windows={closedWindows}
         focused_windows={focusedWindows}
         isMinimized={minimizedWindows}
@@ -145,7 +163,8 @@ const Desktop: React.FC<DesktopProps> = ({ bg_image_name, changeBackgroundImage 
         hide={false}
         showAllApps={() => setAllAppsView(true)}
       />
-
+        {/* Desktop Apps */}
+        {renderDesktopApps()}
       {/* Context Menus */}
       <ContextMenu active={contextMenus.desktop} openApp={openApp} addNewFolder={() => setShowNameBar(true)} />
       <DefaultMenu active={contextMenus.default} />
