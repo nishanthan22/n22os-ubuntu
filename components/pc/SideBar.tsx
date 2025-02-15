@@ -50,7 +50,7 @@ const SideBar: React.FC<SideBarProps> = (props) => {
   return (
     <>
       <div
-        className={`absolute transform duration-300 select-none z-40 left-0 top-0 h-full pt-7 w-auto flex flex-col justify-start items-center border-black border-opacity-60 bg-black bg-opacity-50 ${
+        className={`absolute transform duration-300 select-none z-40 left-0 top-0 h-full pt-4 w-auto flex flex-col justify-start items-center bg-black bg-opacity-60 border-r border-gray-800 ${
           props.hide ? "-translate-x-full" : ""
         }`}
       >

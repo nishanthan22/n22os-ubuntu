@@ -18,7 +18,6 @@ const Navbar: React.FC<NavbarProps> = ({ shutDown, lockScreen }) => {
         tabIndex={0}
         className="pl-3 pr-3 outline-none transition duration-100 ease-in-out border-b-2 border-transparent focus:border-ubb-orange py-1"
       >
-        Activities
       </div>
       <div
         tabIndex={0}

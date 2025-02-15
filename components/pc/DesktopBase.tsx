@@ -79,16 +79,26 @@ const Desktop: React.FC<DesktopProps> = ({ bg_image_name, changeBackgroundImage 
   };
   const renderDesktopApps = () => {
     return (
-      <div className="absolute right-10 top-16 flex flex-col space-y-6">
-        {apps.map((app, index) =>
-          desktopApps.includes(app.id) ? (
-            <div key={index} onClick={() => openApp(app.id)} className="flex flex-col items-center cursor-pointer">
-              <img src={app.icon} alt={app.title} className="w-14 h-14" />
-              <p className="text-sm text-white mt-2 text-center font-medium">{app.title}</p>
-            </div>
-          ) : null
-        )}
-      </div>
+      // <div className="absolute right-10 top-16 flex flex-col space-y-6">
+      //   {apps.map((app, index) =>
+      //     desktopApps.includes(app.id) ? (
+      //       <div key={index} onClick={() => openApp(app.id)} className="flex flex-col items-center cursor-pointer">
+      //         <img src={app.icon} alt={app.title} className="w-14 h-14" />
+      //         <p className="text-sm text-white mt-2 text-center font-medium">{app.title}</p>
+      //       </div>
+      //     ) : null
+      //   )}
+      // </div>
+      <div className="absolute right-5 top-20 flex flex-col items-center space-y-6">
+      {apps.map((app, index) =>
+        desktopApps.includes(app.id) ? (
+          <div key={index} onClick={() => openApp(app.id)} className="flex flex-col items-center cursor-pointer">
+            <img src={app.icon} alt={app.title} className="w-12 h-12" />
+            <p className="text-xs text-white mt-1 text-center font-medium">{app.title}</p>
+          </div>
+        ) : null
+      )}
+    </div>
     );
   };
 
