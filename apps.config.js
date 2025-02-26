@@ -16,7 +16,10 @@ const apps = [
         disabled: false,
         favourite: true,
         desktop_shortcut: true,
-        screen: displayChrome,
+        screen: () => {
+            console.log("🟢 Calling displayChrome()");
+            return displayChrome();
+        },
     },
     {
         id: "calc",
@@ -52,7 +55,7 @@ const apps = [
         disabled: false,
         favourite: true,
         desktop_shortcut: false,
-        screen: displayTerminal,
+        screen: (addFolder, openApp) => displayTerminal(addFolder, openApp),  // Pass required props
     },
     {
         id: "spotify",
@@ -109,7 +112,8 @@ const apps = [
         favourite: false,
         desktop_shortcut: true,
         isExternalApp: true,
-        url: "https://nishanthanmr.com"
+        url: "https://nishanthanmr.com",
+         screen: () => {},
     },
 ]
 

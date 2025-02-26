@@ -7,10 +7,10 @@ interface SideBarItemProps {
   isMinimized: Record<string, boolean>;
   isClose: Record<string, boolean>;
   isFocus: Record<string, boolean>;
-  openApp: (id: string) => void;
+  setAppState: (id: string, state: { isClose: boolean; isMinimized: boolean; isFocus: boolean }) => void;
 }
 
-const DockItem: React.FC<SideBarItemProps> = ({ id, icon, title, isMinimized, isClose, isFocus, openApp }) => {
+const DockItem: React.FC<SideBarItemProps> = ({ id, icon, title, isMinimized, isClose, isFocus, setAppState }) => {
   const [showTitle, setShowTitle] = useState(false);
   const [scaleImage, setScaleImage] = useState(false);
 
@@ -26,9 +26,21 @@ const DockItem: React.FC<SideBarItemProps> = ({ id, icon, title, isMinimized, is
   };
 
   const handleOpenApp = () => {
-    openApp(id);
-    setShowTitle(false);
+    console.log("Opening App:", id);
+    console.log("Before state update:", id, { isClose: isClose[id], isMinimized: isMinimized[id], isFocus: isFocus[id] });
+  
+    setAppState(id, {
+      isClose: false,
+      isMinimized: false,
+      isFocus: true,
+    });
+  
+    // Log after a short delay to check if state updates
+    setTimeout(() => {
+      console.log("After state update:", id, { isClose: isClose[id], isMinimized: isMinimized[id], isFocus: isFocus[id] });
+    }, 500);
   };
+  
 
   return (
     <div

@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import DockItem from "../core/DockItem";
 
@@ -14,12 +13,16 @@ interface SideBarProps {
   closed_windows: Record<string, boolean>;
   focused_windows: Record<string, boolean>;
   isMinimized: Record<string, boolean>;
+  setClosedWindows: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
+  setIsMinimized: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
+  setFocusedWindows: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
   openAppByAppId: (id: string) => void;
   openFromMinimised: (id: string) => void;
   hideSideBar: (id: string | null, hide: boolean) => void;
   hide: boolean;
   showAllApps: () => void;
 }
+
 
 const SideBar: React.FC<SideBarProps> = (props) => {
   const showSideBar = () => props.hideSideBar(null, false);
@@ -35,22 +38,38 @@ const SideBar: React.FC<SideBarProps> = (props) => {
       .filter((app) => props.favourite_apps[app.id])
       .map((app, index) => (
         <DockItem
-          key={index}
-          id={app.id}
-          title={app.title}
-          icon={app.icon}
-          isClose={props.closed_windows}
-          isFocus={props.focused_windows}
-          openApp={props.openAppByAppId}
-          isMinimized={props.isMinimized}
-        />
+        key={index}
+        id={app.id}
+        title={app.title}
+        icon={app.icon}
+        isClose={props.closed_windows}
+        isFocus={props.focused_windows}
+        isMinimized={props.isMinimized}
+        setAppState={(id, state) => {
+          props.openAppByAppId(id);
+        
+          props.setClosedWindows((prev) => ({ ...prev, [id]: false }));  // ✅ Ensure app opens
+          props.setIsMinimized((prev) => ({ ...prev, [id]: state.isMinimized }));  // ✅ Update minimized state
+          props.setFocusedWindows((prev) => ({ ...prev, [id]: state.isFocus }));  // ✅ Bring to focus
+        
+          console.log("Updated App State:", id, {
+            isClose: props.closed_windows[id],
+            isMinimized: props.isMinimized[id],
+            isFocus: props.focused_windows[id],
+          });
+        }}
+        
+        
+      />
+      
+
       ));
   };
 
   return (
     <>
       <div
-        className={`absolute transform duration-300 select-none z-40 left-0 top-0 h-full pt-4 w-auto flex flex-col justify-start items-center bg-black bg-opacity-60 border-r border-gray-800 ${
+        className={`absolute transform duration-300 select-none z-40 left-0 top-2 h-full pt-4 w-auto flex flex-col justify-start items-center bg-black bg-opacity-60 border-r border-gray-800 ${
           props.hide ? "-translate-x-full" : ""
         }`}
       >

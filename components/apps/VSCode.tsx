@@ -1,4 +1,4 @@
-import React, { JSX } from 'react';
+import React from 'react';
 
 const VsCode: React.FC = () => {
     return (
@@ -13,6 +13,6 @@ const VsCode: React.FC = () => {
 
 export default VsCode;
 
-export const displayVsCode = (): JSX.Element => {
+export const displayVsCode = (): React.ReactElement => {
     return <VsCode />;
 };

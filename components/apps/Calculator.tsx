@@ -1,5 +1,6 @@
-import React, { Component, createRef, JSX, RefObject } from "react";
+import React, { Component, createRef, RefObject } from "react";
 import { Parser } from "expr-eval";
+import { JSX } from "react/jsx-runtime";
 
 interface CalcState {
   terminal: JSX.Element[];

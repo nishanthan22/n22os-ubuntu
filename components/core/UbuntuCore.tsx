@@ -11,7 +11,10 @@ interface UbuntuCoreProps {
 
 const UbuntuCore: React.FC<UbuntuCoreProps> = ({ id, name, icon, url, isExternalApp, openApp }) => {
   const handleOpenApp = () => {
+    console.log(`🟢 Clicked on App: ${id}`);
+  
     if (isExternalApp && url) {
+      console.log(`🔗 Opening External Link: ${url}`);
       window.open(url, "_blank");
     } else {
       openApp(id);
@@ -23,6 +26,7 @@ const UbuntuCore: React.FC<UbuntuCoreProps> = ({ id, name, icon, url, isExternal
       className="p-1 m-px z-10 bg-white bg-opacity-0 hover:bg-opacity-20 focus:bg-ub-orange focus:bg-opacity-50 focus:border-yellow-700 focus:border-opacity-100 border border-transparent outline-none rounded select-none w-24 h-20 flex flex-col justify-start items-center text-center text-xs font-normal text-white relative"
       id={`app-${id}`}
       onDoubleClick={handleOpenApp}
+      onClick={handleOpenApp}
       tabIndex={0}
     >
       <div className="relative">

@@ -1,5 +1,4 @@
 import React, { useState, useEffect, JSX } from "react";
-import Draggable from "react-draggable";
 import { motion } from "framer-motion";
 // import ReactGA from "react-ga4";
 import { displayTerminal } from "../apps/Terminal";
@@ -40,16 +39,27 @@ const Window: React.FC<WindowProps> = ({
   const [closedState, setClosedState] = useState(false);
   const [maximized, setMaximized] = useState(false);
   const [parentSize, setParentSize] = useState({ height: 100, width: 100 });
-
+  useEffect(() => {
+    console.log(`🟢 <Window /> component mounted for: ${id}`);
+  }, []);
+  
   useEffect(() => {
     setDefaultWindowDimension();
-    // ReactGA.send({ hitType: "pageview", page: `/${id}`, title: "Custom Title" });
+    resizeBoundaries();
     window.addEventListener("resize", resizeBoundaries);
     return () => {
-      // ReactGA.send({ hitType: "pageview", page: "/desktop", title: "Custom Title" });
       window.removeEventListener("resize", resizeBoundaries);
     };
   }, []);
+
+   // Add this effect to handle visibility
+   useEffect(() => {
+    console.log(`🔄 Window ${id} | isFocused: ${isFocused} | closedState: ${closedState}`);
+    if (isFocused) {
+      setClosedState(false); // Reset closed state
+    }
+  }, [isFocused, closedState]);
+  
 
   const setDefaultWindowDimension = () => {
     if (window.innerWidth < 640) {
@@ -79,33 +89,39 @@ const Window: React.FC<WindowProps> = ({
   const focusWindow = () => openApp(id);
 
   const closeWindow = () => {
+    console.log(`🛑 Closing window: ${id}`);
     setClosedState(true);
-    hideSideBar(id, false);
     setTimeout(() => closed(id), 300);
   };
 
   return (
     <motion.div
-      drag
-      dragConstraints={{
-        left: 0,
-        top: 0,
-        right: parentSize.width,
-        bottom: parentSize.height
-      }}
-      dragElastic={0} // Prevents dragging beyond bounds
-      dragMomentum={false} // Matches react-draggable behavior
-      onDragStart={changeCursorToMove}
-      onDragEnd={changeCursorToDefault}
-      initial={{ x: 60, y: 10 }} // Equivalent to defaultPosition
-      className="bg-ub-window-title" // Handle styling remains the same
-    >
+    initial={{ opacity: 0, scale: 0.9 }} // Start slightly faded
+    animate={{
+      opacity: 1, // Ensure the window is always visible
+      scale: 1, 
+    }}
+    exit={{
+      opacity: 0, 
+      scale: 0.8
+    }}
+    transition={{ duration: 0.3 }}
+
+   >
+
       <div
         style={{ width: `${width}%`, height: `${height}%` }}
-        className={`${cursorType} ${closedState ? " closed-window " : ""} ${maximized ? " duration-300 rounded-none" : " rounded-lg rounded-b-none"} ${minimized ? " opacity-0 invisible duration-200 " : ""} ${isFocused ? " z-30 " : " z-20 notFocused"} opened-window overflow-hidden min-w-1/4 min-h-1/4 main-window absolute window-shadow border-black border-opacity-40 border border-t-0 flex flex-col`}
+        className={`${cursorType} 
+          ${maximized ? "rounded-none" : "rounded-lg rounded-b-none"} 
+          ${isFocused ? "z-30" : "z-20 notFocused"} 
+          opened-window overflow-hidden min-w-1/4 min-h-1/4 main-window absolute window-shadow 
+          border-black border-opacity-40 border border-t-0 flex flex-col`}
         id={id}
       >
-        <WindowTopBar title={title} />
+       
+
+<WindowTopBar title={title} closeWindow={closeWindow} />
+
         { id === "settings" ? (
           <Settings 
             changeBackgroundImage={changeBackgroundImage ?? (() => {})} 
@@ -121,11 +137,18 @@ const Window: React.FC<WindowProps> = ({
 
 export default Window;
 
-const WindowTopBar: React.FC<{ title: string }> = ({ title }) => (
-  <div className="relative bg-ub-window-title border-t-2 border-white border-opacity-5 py-1.5 px-3 text-white w-full select-none rounded-b-none">
-    <div className="flex justify-center text-sm font-bold">{title}</div>
+const WindowTopBar: React.FC<{ title: string; closeWindow: () => void }> = ({ title, closeWindow }) => (
+  <div className="relative bg-ub-window-title border-t-2 border-white border-opacity-5 py-1.5 px-3 text-white w-full select-none rounded-b-none flex justify-between items-center">
+    <div className="text-sm font-bold">{title}</div>
+    <button 
+      className="text-white bg-red-600 hover:bg-red-800 px-2 py-0.5 rounded"
+      onClick={closeWindow}
+    >
+      ✖
+    </button>
   </div>
 );
+
 
 const WindowMainScreen: React.FC<{ screen: () => JSX.Element; addFolder?: (name: string) => void; openApp: (id: string) => void }> = ({ screen, addFolder, openApp }) => {
   const [setDarkBg, setSetDarkBg] = useState(false);
@@ -134,12 +157,28 @@ const WindowMainScreen: React.FC<{ screen: () => JSX.Element; addFolder?: (name:
     setTimeout(() => setSetDarkBg(true), 3000);
   }, []);
 
+  let screenComponent: JSX.Element | null = null;
+  try {
+    screenComponent = screen();
+    console.log(`🟢 screen() executed for window, output:`, screenComponent);
+  } catch (error) {
+    console.error(`❌ Error rendering screen:`, error);
+    screenComponent = <div>Error loading application</div>;
+  }
+  
+  if (!screenComponent) {
+    console.warn(`❌ screenComponent is null, window will not render!`);
+    return null;
+  }
+  
+
   return (
     <div className={`w-full flex-grow z-20 max-h-full overflow-y-auto windowMainScreen${setDarkBg ? " bg-ub-drk-abrgn " : " bg-ub-cool-grey"}`}>
-      {addFolder ? displayTerminal(addFolder, openApp) : screen()}
+      {screenComponent}
     </div>
   );
 };
+
 function restoreWindow() {
   throw new Error("Function not implemented.");
 }
